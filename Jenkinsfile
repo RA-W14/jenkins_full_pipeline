@@ -9,7 +9,7 @@ pipeline {
   stages {
     stage('Lint') {
       steps {
-        sh """
+        bat """
         pip install ruff mypy
         ruff check .
         mypy .
@@ -18,7 +18,7 @@ pipeline {
     }
     stage('Test') {
       steps {
-        sh "python3 -m unittest discover ."
+        bat "python3 -m unittest discover ."
       }
     }
     // stage('Deploy') {
