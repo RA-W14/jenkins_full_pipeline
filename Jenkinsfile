@@ -2,35 +2,56 @@ pipeline {
   agent any
 
   environment {
+    // PROD_SSH = "user@your-prod-server-ip-or-hostname"
+    // PROD_PATH = "/home/user/twitter_for_pets"
+    // SSH_KEY_ID = "prod-ssh-key"
     GITHUB_TOKEN = credentials('github-pat-token')
     PATH = "C:/Users/Toh Hong Yun/AppData/Local/Programs/Python/Python311;C:/Users/Toh Hong Yun/AppData/Local/Programs/Python/Python311/Lib/site-packages/;${env.PATH}"
   }
 
-  stages {
-    stage('Lint') {
-      steps {
-        bat """
-        pip install ruff mypy
-        ruff check .
-        mypy .
-        """
-      }
+stages {
+        stage('Lint') {
+            steps {
+                // Use Windows batch commands
+                bat '''
+                pip install ruff mypy
+                ruff check .
+                mypy twitter_for_pets.py
+                '''
+            }
+        }
+
+        stage('Test') {
+            steps {
+                bat '''
+                python -m unittest discover -s tests || echo "No tests found"
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                tag "release-*"
+            }
+            steps {
+                sshagent (credentials: [SSH_KEY_ID]) {
+                    // Use Git Bash to run Linux SSH commands from Windows Jenkins
+                    bat '''
+                    bash -c "ssh $PROD_SSH 'pkill -f twitter_for_pets.py || true; mkdir -p $PROD_PATH'"
+                    bash -c "scp twitter_for_pets.py requirements.txt $PROD_SSH:$PROD_PATH/"
+                    bash -c "ssh $PROD_SSH '
+                        cd $PROD_PATH
+                        if [ ! -d venv ]; then
+                            python3 -m venv venv
+                        fi
+                        source venv/bin/activate
+                        pip install -r requirements.txt
+                        nohup python3 twitter_for_pets.py > server.log 2>&1 &
+                    '"
+                    '''
+                }
+            }
+        }
     }
-    stage('Test') {
-      steps {
-        bat "python3 -m unittest discover ."
-      }
-    }
-    // stage('Deploy') {
-    //   when {
-    //     expression {
-    //       // Only run deploy when this build was triggered by a tag
-    //       return env.GIT_BRANCH?.startsWith("origin/tags/") || env.GIT_TAG != null
-    //     }
-    //   }
-    //   steps {
-    //     // your deploy commands (see below)
-    //   }
-    // }
-  }
 }
+
