@@ -2,6 +2,7 @@ pipeline {
   agent any
 
   environment {
+    GITHUB_TOKEN = credentials('github-pat-token')
     PATH = "C:/Users/Toh Hong Yun/AppData/Local/Programs/Python/Python311;${env.PATH}"
   }
 
