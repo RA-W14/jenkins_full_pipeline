@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     GITHUB_TOKEN = credentials('github-pat-token')
-    PATH = "C:/Users/Toh Hong Yun/AppData/Local/Programs/Python/Python311;C:\Users\Toh Hong Yun\AppData\Local\Programs\Python\Python311\Lib\site-packages\;${env.PATH}"
+    PATH = "C:/Users/Toh Hong Yun/AppData/Local/Programs/Python/Python311;C:/Users/Toh Hong Yun/AppData/Local/Programs/Python/Python311/Lib/site-packages/;${env.PATH}"
   }
 
   stages {
