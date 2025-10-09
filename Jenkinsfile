@@ -5,8 +5,7 @@ pipeline {
         // PROD_SSH = "user@your-prod-server-ip-or-hostname"
         // PROD_PATH = "/home/user/twitter_for_pets"
         // SSH_KEY_ID = "prod-ssh-key"
-        // C:/Users/Toh Hong Yun/AppData/Local/Programs/Python/Python311/Lib/site-packages/;
-        PATH = "C:/Users/Toh Hong Yun/AppData/Local/Programs/Python/Python311;${env.PATH}"
+        PATH = "C:/Users/Toh Hong Yun/AppData/Local/Programs/Python/Python311;C:/Users/Toh Hong Yun/AppData/Local/Programs/Python/Python311/Lib/site-packages/;${env.PATH}"
     }
 
     stages {
