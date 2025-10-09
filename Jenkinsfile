@@ -11,7 +11,6 @@ pipeline {
     stages {
         stage('Lint') {
             steps {
-                // Use Windows batch commands
                 bat '''
                 pip install -r req
                 pip install ruff mypy
@@ -24,7 +23,7 @@ pipeline {
         stage('Test') {
             steps {
                 bat '''
-                python -m unittest discover -s tests || echo "No tests found"
+                python -m unittest test_twitter_for_pets
                 '''
             }
         }
